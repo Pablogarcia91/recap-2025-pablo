@@ -1,65 +1,210 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useCallback, useRef, useEffect } from "react";
+import { HeroSection } from "@/components/sections/hero-section";
+import { StatsSection } from "@/components/sections/stats-section";
+import { TimelineSection } from "@/components/sections/timeline-section";
+import { TeamContributionsSection } from "@/components/sections/team-contributions-section";
+import { TeamSlide } from "@/components/sections/team-slide";
+import { BeyondDeliverablesSection } from "@/components/sections/beyond-deliverables-section";
+import { FooterSection } from "@/components/sections/footer-section";
+import { SlideWrapper } from "@/components/presentation/slide-wrapper";
+import { PresentationControls } from "@/components/presentation/presentation-controls";
+import { useKeyboardNavigation } from "@/hooks/use-keyboard-navigation";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
+import { Presentation } from "lucide-react";
+import { reviewContent } from "@/lib/content";
+
+// Calculate total slides dynamically based on content
+// Hero+Stats, Timeline, Teams (one per team), ExtraValue, Footer
+const TOTAL_SLIDES = 2 + reviewContent.teamContributions.length + 2;
 
 export default function Home() {
+  const [isPresenting, setIsPresenting] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const scrollToSlide = useCallback((index: number) => {
+    if (containerRef.current) {
+      const slideHeight = window.innerHeight;
+      containerRef.current.scrollTo({
+        top: index * slideHeight,
+        behavior: "smooth",
+      });
+    }
+    setCurrentSlide(index);
+  }, []);
+
+  const handleNextSlide = useCallback(() => {
+    if (currentSlide < TOTAL_SLIDES - 1) {
+      scrollToSlide(currentSlide + 1);
+    }
+  }, [currentSlide, scrollToSlide]);
+
+  const handlePreviousSlide = useCallback(() => {
+    if (currentSlide > 0) {
+      scrollToSlide(currentSlide - 1);
+    }
+  }, [currentSlide, scrollToSlide]);
+
+  const handleTogglePresentation = useCallback(() => {
+    setIsPresenting((prev) => {
+      if (!prev) {
+        // Entering presentation mode
+        document.body.classList.add("presentation-mode");
+        setCurrentSlide(0);
+        setTimeout(() => scrollToSlide(0), 100);
+      } else {
+        // Exiting presentation mode
+        document.body.classList.remove("presentation-mode");
+      }
+      return !prev;
+    });
+  }, [scrollToSlide]);
+
+  const handleExitPresentation = useCallback(() => {
+    setIsPresenting(false);
+    document.body.classList.remove("presentation-mode");
+  }, []);
+
+  const handleSlideVisible = useCallback((index: number) => {
+    setCurrentSlide(index);
+  }, []);
+
+  // Use keyboard navigation
+  useKeyboardNavigation({
+    isPresenting,
+    currentSlide,
+    totalSlides: TOTAL_SLIDES,
+    onNextSlide: handleNextSlide,
+    onPreviousSlide: handlePreviousSlide,
+    onExit: handleExitPresentation,
+    onGoToSlide: scrollToSlide,
+  });
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove("presentation-mode");
+    };
+  }, []);
+
+  // Fixed controls that don't move
+  const FixedControls = (
+    <div className="fixed top-6 right-6 z-50 flex items-center gap-2">
+      <ThemeToggle />
+      <Button
+        variant={isPresenting ? "default" : "outline"}
+        size="sm"
+        onClick={handleTogglePresentation}
+        className="gap-2"
+      >
+        <Presentation className="h-4 w-4" />
+        {isPresenting ? "Exit" : "Present"}
+      </Button>
+    </div>
+  );
+
+  // Normal scrolling mode (not presentation)
+  if (!isPresenting) {
+    return (
+      <div className="normal-container">
+        {FixedControls}
+        {/* Hero + Stats */}
+        <HeroSection />
+        <StatsSection />
+
+        {/* Timeline */}
+        <TimelineSection isPresenting={false} />
+
+        {/* Team Contributions */}
+        <TeamContributionsSection />
+
+        {/* Beyond Deliverables */}
+        <BeyondDeliverablesSection isPresenting={false} />
+
+        {/* Footer */}
+        <FooterSection />
+      </div>
+    );
+  }
+
+  // Presentation mode - track slide index
+  let slideIndex = 0;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div
+      ref={containerRef}
+      className="presentation-container"
+    >
+      {FixedControls}
+
+      {/* Slide 1: Hero + Stats */}
+      <SlideWrapper
+        slideIndex={slideIndex++}
+        isPresenting={isPresenting}
+        onSlideVisible={handleSlideVisible}
+      >
+        <div className="flex flex-col h-full w-full">
+          <div className="flex-1 flex items-center justify-center">
+            <HeroSection showScrollIndicator={false} />
+          </div>
+          <StatsSection />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </SlideWrapper>
+
+      {/* Slide 2: Timeline */}
+      <SlideWrapper
+        slideIndex={slideIndex++}
+        isPresenting={isPresenting}
+        onSlideVisible={handleSlideVisible}
+      >
+        <div className="h-full w-full overflow-y-auto">
+          <TimelineSection isPresenting={isPresenting} />
         </div>
-      </main>
+      </SlideWrapper>
+
+      {/* Slides for each team */}
+      {reviewContent.teamContributions.map((team) => (
+        <SlideWrapper
+          key={team.id}
+          slideIndex={slideIndex++}
+          isPresenting={isPresenting}
+          onSlideVisible={handleSlideVisible}
+        >
+          <TeamSlide team={team} />
+        </SlideWrapper>
+      ))}
+
+      {/* Extra Value Slide */}
+      <SlideWrapper
+        slideIndex={slideIndex++}
+        isPresenting={isPresenting}
+        onSlideVisible={handleSlideVisible}
+      >
+        <div className="h-full w-full overflow-y-auto">
+          <BeyondDeliverablesSection isPresenting={isPresenting} />
+        </div>
+      </SlideWrapper>
+
+      {/* Footer Slide */}
+      <SlideWrapper
+        slideIndex={slideIndex++}
+        isPresenting={isPresenting}
+        onSlideVisible={handleSlideVisible}
+      >
+        <FooterSection />
+      </SlideWrapper>
+
+      {/* Presentation Controls */}
+      <PresentationControls
+        currentSlide={currentSlide}
+        totalSlides={TOTAL_SLIDES}
+        onNext={handleNextSlide}
+        onPrevious={handlePreviousSlide}
+        onExit={handleExitPresentation}
+      />
     </div>
   );
 }
