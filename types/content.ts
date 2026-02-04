@@ -20,14 +20,23 @@ export interface Quarter {
 }
 
 // Team Contributions data
-export type BadgeType = "HIGH IMPACT" | "PERSONAL" | "FUTURE" | null;
+export type BadgeType = "High Personal Impact" | "High Product Impact" | "High Business Impact";
+
+export interface Demo {
+  label: string;
+  url: string;
+  password?: string;
+}
 
 export interface Project {
   id: string;
   title: string;
   description: string;
-  badge?: BadgeType;
+  badges?: BadgeType[];
   demoUrl?: string;
+  demoPassword?: string;
+  demos?: Demo[];
+  liveUrl?: string;
 }
 
 export interface TeamContribution {

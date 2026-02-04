@@ -5,6 +5,8 @@ import { reviewContent } from "@/lib/content";
 import { TeamContribution, Project } from "@/types/content";
 import { Badge } from "@/components/ui/badge";
 import { motion, useInView, cubicBezier } from "framer-motion";
+import { Copy } from "lucide-react";
+import { toast } from "sonner";
 
 const smoothEasing = cubicBezier(0.22, 1, 0.36, 1);
 
@@ -17,6 +19,13 @@ function ProjectCard({ project, index }: ProjectCardProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
+  const copyToClipboard = async (text: string) => {
+    await navigator.clipboard.writeText(text);
+    toast.success("Password copied to clipboard");
+  };
+
+  const hasActions = project.demoUrl || project.liveUrl || (project.demos && project.demos.length > 0);
+
   return (
     <motion.div
       ref={ref}
@@ -28,26 +37,72 @@ function ProjectCard({ project, index }: ProjectCardProps) {
         ease: smoothEasing,
       }}
     >
-      <div className={`py-6 border-b border-border last:border-b-0 ${project.demoUrl ? "group rounded-lg -mx-4 px-4 transition-all hover:bg-muted hover:border hover:border-border hover:shadow-sm" : ""}`}>
-        <div className="flex items-center gap-3">
+      <div className={`py-6 border-b border-border last:border-b-0 min-h-[140px] flex flex-col ${hasActions ? "group rounded-lg -mx-4 px-4 transition-all hover:bg-muted hover:border hover:border-border hover:shadow-sm" : ""}`}>
+        <div className="flex items-center gap-2 flex-wrap">
           <h4 className="font-serif text-lg font-semibold">{project.title}</h4>
-          {project.badge && (
-            <Badge className="font-medium uppercase tracking-wider bg-accent/20 text-foreground">
-              {project.badge}
+          {project.badges && project.badges.map((badge) => (
+            <Badge key={badge} className="font-medium uppercase tracking-wider bg-accent/20 text-foreground">
+              {badge}
             </Badge>
-          )}
+          ))}
         </div>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground flex-grow">
           {project.description}
         </p>
-        {project.demoUrl && (
-          <div className="mt-4 flex justify-end">
-            <a
-              href={project.demoUrl}
-              className="inline-flex items-center px-4 py-2 text-xs font-medium tracking-wider bg-foreground text-white! dark:text-black! rounded-md transition-opacity hover:opacity-80 no-underline"
-            >
-              View demo
-            </a>
+        {hasActions && (
+          <div className="mt-4 flex items-center justify-between gap-4 flex-wrap">
+            {project.demoPassword && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span>Password: <code className="bg-muted px-2 py-1 rounded font-mono">{project.demoPassword}</code></span>
+                <button
+                  onClick={() => copyToClipboard(project.demoPassword!)}
+                  className="p-1 rounded hover:bg-muted transition-colors"
+                  title="Copy password"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
+            <div className="flex items-center gap-2 ml-auto flex-wrap">
+              {project.liveUrl && (
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-4 py-2 text-xs font-medium tracking-wider bg-sky-200 text-sky-900! rounded-md transition-opacity hover:opacity-80 no-underline"
+                >
+                  Check it live
+                </a>
+              )}
+              {project.demoUrl && (
+                <a
+                  href={project.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-4 py-2 text-xs font-medium tracking-wider bg-foreground text-white! dark:text-black! rounded-md transition-opacity hover:opacity-80 no-underline"
+                >
+                  View demo
+                </a>
+              )}
+              {project.demos && project.demos.map((demo, i) => {
+                const isDocumentation = demo.label.toLowerCase().includes('documentation');
+                return (
+                  <a
+                    key={i}
+                    href={demo.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-flex items-center px-4 py-2 text-xs font-medium tracking-wider rounded-md transition-opacity hover:opacity-80 no-underline ${
+                      isDocumentation
+                        ? 'bg-amber-200 text-amber-900!'
+                        : 'bg-foreground text-white! dark:text-black!'
+                    }`}
+                  >
+                    {demo.label}
+                  </a>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>

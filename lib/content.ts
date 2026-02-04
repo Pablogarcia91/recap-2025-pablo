@@ -39,7 +39,7 @@ export const reviewContent: ReviewContent = {
       {
         id: "Q1",
         label: "Q1 2025",
-        title: "Onboarding and Subscriptions",
+        title: "Onboarding & Subscription",
         items: [
           { id: "q1-1", text: "Questionnaire" },
           { id: "q1-2", text: "Forms" },
@@ -95,28 +95,31 @@ export const reviewContent: ReviewContent = {
           id: "proj-1-1",
           title: "Subscription Tracker",
           description:
-            "Designed and implemented a comprehensive subscription tracking system, enabling users to monitor and manage their active subscriptions efficiently.",
-          badge: "HIGH IMPACT",
+            "Design and implementation of a tracking system for all subscriptions. Providing users (General Partners) with the ability to have all information centralized in one place, from which they can quickly obtain desired information in a clearer and more efficient way using filters. Also incorporated the saved filters function to further improve efficiency based on the different needs that different roles accessing this information may have.",
+          badges: ["High Product Impact"],
+          liveUrl: "https://workbench.vega-alts-dev.link/subscriptions-tracker",
         },
         {
           id: "proj-1-2",
-          title: "Tasks Pages",
+          title: "Tasks detail pages",
           description:
-            "Developed intuitive task management pages that streamline workflow organization and improve team productivity.",
-          badge: "HIGH IMPACT",
+            "New functionalities incorporated that provide users with greater context and information about the task, taking into account its status, stage, and notes to view the 'history'. Helps users make data-driven decisions, resulting in greater usage efficiency.",
+          badges: ["High Product Impact"],
+          liveUrl: "https://workbench.vega-alts-dev.link/subscription/cdde60cd-bcf5-47da-9871-52a593102ee9/tasks/9ddaf216-a51f-4ecd-9f6b-cb08d7fc724c/questionnaire",
         },
         {
           id: "proj-1-3",
           title: "Manual Submission",
           description:
-            "Created a demo for manual submission workflows, showcasing improved data entry processes.",
-          demoUrl: "#",
+            "Feature to offer users the possibility of completing the subscription in a non-digital way. Being able to provide solutions based on the real needs of platform users.",
+          demoUrl: "https://celestial-demo.vercel.app/",
+          demoPassword: "elevator",
         },
         {
           id: "proj-1-4",
           title: "General Use Improvements",
           description:
-            "Implemented various UI/UX improvements across the platform to enhance user experience.",
+            "Improvements in navigation, content hierarchy, and information architecture.",
         },
       ],
     },
@@ -129,15 +132,24 @@ export const reviewContent: ReviewContent = {
           id: "proj-2-1",
           title: "Current Subscriptions",
           description:
-            "Built a demo showcasing the current subscriptions management interface with improved data visualization.",
-          demoUrl: "#",
+            "Improvements to the visual design on the homepage, providing more relevant, simpler, and easier-to-understand information for users. Greater control over ongoing subscriptions.",
+          demoUrl: "https://current-subscriptions.vercel.app/",
+          demoPassword: "sunflower",
         },
         {
           id: "proj-2-2",
           title: "Start New Subscription",
           description:
-            "Designed and prototyped the new subscription flow, focusing on reducing friction and improving conversion.",
-          demoUrl: "#",
+            "Clarifying the steps involved in the process, keeping users informed at all times about what information is required and how to make the most of it by using previous presets to reduce completion time. More context = less time to create a new subscription.",
+          demoUrl: "https://fund-onboarding-app.vercel.app/",
+          demoPassword: "bottle",
+        },
+        {
+          id: "proj-2-3",
+          title: "General use improvements",
+          description:
+            "Working on improving the user experience of filling out the subscription questionnaire (alongside the implementation of the new form design), we added new features such as footnotes, comments on questions, and a help section to enable LPs to contact the GP during the process. This way, we offered users the option to interact and communicate with GPs to resolve doubts and reduce subscription correction time and the overall time to complete the questionnaire.",
+          
         },
       ],
     },
@@ -150,13 +162,13 @@ export const reviewContent: ReviewContent = {
           id: "proj-3-1",
           title: "Mailing Ownership",
           description:
-            "Took ownership of the mailing system integration, ensuring reliable communication with users throughout their journey.",
+            "Generation of a common nomenclature system and standardization across different tools (Spreadsheet - Mailjet - Metabase). Improvement regarding information on the status of each email, organized by GP/LP (Apollo), and creation of necessary emails for new GPs.",
         },
         {
           id: "proj-3-2",
           title: "Roles and Permissions",
           description:
-            "Designed the roles and permissions system interface, enabling granular access control across the platform.",
+            "Improvements in standardization of design system component usage, navigation patterns, and consistency and coherence across all profiles and parties involved.",
         },
       ],
     },
@@ -170,13 +182,15 @@ export const reviewContent: ReviewContent = {
           id: "proj-4-1",
           title: "Dashboard Creation",
           description:
-            "Collaborated on creating comprehensive analytics dashboards for tracking key performance metrics.",
+            "Creation from scratch of our own user data analysis system for the platform to better understand how users utilize it, enabling senior roles to have real data to detect pain points, improvements, and be more efficient in their daily work. Work based on Apollo's specific requirements, but designed and built in a way that can be scalable and reusable for the future.",
+          liveUrl: "https://workbench.vega-alts-dev.link/analytics?tab=sessions",
         },
         {
           id: "proj-4-2",
           title: "Data Visualization",
           description:
-            "Implemented interactive data visualizations to help stakeholders understand trends and patterns.",
+            "Creation of different types of charts to help users better understand the data. Improved ease in performing more exhaustive tracking of user behavior.",
+          badges: ["High Business Impact"],
         },
       ],
     },
@@ -189,34 +203,34 @@ export const reviewContent: ReviewContent = {
           id: "proj-5-1",
           title: "Tables & Form Improvements",
           description:
-            "Overhauled table components and form patterns to create consistent, accessible, and efficient data entry experiences.",
-          badge: "HIGH IMPACT",
+            "Initiative driven by the design team proposing functional and visual improvements to components that make up tables and forms. Focus on component development working collaboratively alongside the front-end team.",
+          badges: ["High Product Impact"],
+          demos: [
+            { label: "Tables documentation", url: "https://vegainvestments.atlassian.net/wiki/spaces/SD/pages/1242398741/Tables+Improvements" },
+            { label: "Forms documentation", url: "https://vegainvestments.atlassian.net/wiki/spaces/SD/pages/1251704847/Forms+design+system" },
+          ],
         },
         {
           id: "proj-5-2",
           title: "Vibe-coding JAMS",
           description:
-            "Personal initiative to explore creative coding and rapid prototyping techniques, bringing fresh perspectives to design challenges.",
-          badge: "PERSONAL",
+            "Wednesday established as `vibe-coding` day, showing the design team's interest and initiative to stay updated with current trends and tendencies, and carrying out exercises that can subsequently be useful for us to incorporate into our platform. On a personal level, it has helped me tremendously to grow as a professional and to be able to showcase and apply that new knowledge to my day-to-day work.",
+          badges: ["High Personal Impact", "High Product Impact", "High Business Impact"],
         },
         {
           id: "proj-5-3",
           title: "Multi-tenancy Designs",
           description:
-            "Laid the groundwork for multi-tenant architecture in the design system, enabling future scalability.",
-          badge: "FUTURE",
+            "Design and proposals of scalable, modular, and reusable designs, being able to reduce both costs and working times (design, implementation, development...).",
+          badges: ["High Product Impact", "High Business Impact"],
+          demoUrl: "#",
         },
+        
         {
           id: "proj-5-4",
-          title: "Mobile Testing",
+          title: "Standardization",
           description:
-            "Established mobile testing protocols and conducted comprehensive device testing to ensure responsive experiences.",
-        },
-        {
-          id: "proj-5-5",
-          title: "Error Screens Standardization",
-          description:
-            "Created a unified error screen system with consistent messaging, helpful actions, and brand-aligned visuals.",
+            "Responsibility for design coherence and consistency across the entire platform. Conducting QA and testing sessions to verify that everything is correct. Ensuring that implementations are as faithful as possible to the designs, taking into account deadlines and required efforts.",
         },
       ],
     },

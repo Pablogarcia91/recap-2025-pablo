@@ -35,13 +35,13 @@ export function TeamSlide({ team }: TeamSlideProps) {
               key={project.id}
               className={`py-4 ${index !== team.projects.length - 1 ? "border-b border-border" : ""}`}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h4 className="font-serif text-base font-semibold">{project.title}</h4>
-                {project.badge && (
-                  <Badge variant="outline" className="text-xs font-medium uppercase tracking-wider">
-                    {project.badge}
+                {project.badges && project.badges.map((badge) => (
+                  <Badge key={badge} className="font-medium uppercase tracking-wider bg-accent/20 text-foreground">
+                    {badge}
                   </Badge>
-                )}
+                ))}
                 {project.demoUrl && (
                   <a
                     href={project.demoUrl}
