@@ -2,7 +2,6 @@
 
 import { TeamContribution } from "@/types/content";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink } from "lucide-react";
 
 interface TeamSlideProps {
   team: TeamContribution;
@@ -30,33 +29,69 @@ export function TeamSlide({ team }: TeamSlideProps) {
 
         {/* Projects - compact view for presentation */}
         <div>
-          {team.projects.map((project, index) => (
-            <div
-              key={project.id}
-              className={`py-4 ${index !== team.projects.length - 1 ? "border-b border-border" : ""}`}
-            >
-              <div className="flex items-center gap-2 flex-wrap">
-                <h4 className="font-serif text-base font-semibold">{project.title}</h4>
-                {project.badges && project.badges.map((badge) => (
-                  <Badge key={badge} className="font-medium uppercase tracking-wider bg-accent/20 text-foreground">
-                    {badge}
-                  </Badge>
-                ))}
-                {project.demoUrl && (
-                  <a
-                    href={project.demoUrl}
-                    className="ml-auto inline-flex items-center gap-1 text-xs font-medium uppercase tracking-wider text-muted-foreground hover:text-primary"
-                  >
-                    Demo
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
+          {team.projects.map((project, index) => {
+            const hasActions = project.demoUrl || project.liveUrl || (project.demos && project.demos.length > 0);
+            return (
+              <div
+                key={project.id}
+                className={`py-4 ${index !== team.projects.length - 1 ? "border-b border-border" : ""}`}
+              >
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h4 className="font-serif text-base font-semibold">{project.title}</h4>
+                  {project.badges && project.badges.map((badge) => (
+                    <Badge key={badge} className="font-medium uppercase tracking-wider bg-accent/20 text-foreground">
+                      {badge}
+                    </Badge>
+                  ))}
+                </div>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground line-clamp-2">
+                  {project.description}
+                </p>
+                {hasActions && (
+                  <div className="mt-2 flex items-center gap-2 flex-wrap">
+                    {project.liveUrl && (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-3 py-1.5 text-xs font-medium tracking-wider bg-sky-200 text-sky-900! rounded-md transition-opacity hover:opacity-80 no-underline"
+                      >
+                        Check it live
+                      </a>
+                    )}
+                    {project.demoUrl && (
+                      <a
+                        href={project.demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-3 py-1.5 text-xs font-medium tracking-wider bg-foreground text-white! dark:text-black! rounded-md transition-opacity hover:opacity-80 no-underline"
+                      >
+                        View demo
+                      </a>
+                    )}
+                    {project.demos && project.demos.map((demo, i) => {
+                      const isDocumentation = demo.label.toLowerCase().includes('documentation');
+                      return (
+                        <a
+                          key={i}
+                          href={demo.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`inline-flex items-center px-3 py-1.5 text-xs font-medium tracking-wider rounded-md transition-opacity hover:opacity-80 no-underline ${
+                            isDocumentation
+                              ? 'bg-amber-200 text-amber-900!'
+                              : 'bg-foreground text-white! dark:text-black!'
+                          }`}
+                        >
+                          {demo.label}
+                        </a>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground line-clamp-2">
-                {project.description}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
