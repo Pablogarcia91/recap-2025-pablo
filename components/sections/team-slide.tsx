@@ -2,12 +2,19 @@
 
 import { TeamContribution } from "@/types/content";
 import { Badge } from "@/components/ui/badge";
+import { Copy } from "lucide-react";
+import { toast } from "sonner";
 
 interface TeamSlideProps {
   team: TeamContribution;
 }
 
 export function TeamSlide({ team }: TeamSlideProps) {
+  const copyToClipboard = async (text: string) => {
+    await navigator.clipboard.writeText(text);
+    toast.success("Password copied to clipboard");
+  };
+
   return (
     <div className="flex h-full w-full items-center justify-center px-6 py-8">
       <div className="mx-auto max-w-3xl w-full">
@@ -48,45 +55,59 @@ export function TeamSlide({ team }: TeamSlideProps) {
                   {project.description}
                 </p>
                 {hasActions && (
-                  <div className="mt-2 flex items-center gap-2 flex-wrap">
-                    {project.liveUrl && (
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center px-3 py-1.5 text-xs font-medium tracking-wider bg-sky-200 text-sky-900! rounded-md transition-opacity hover:opacity-80 no-underline"
-                      >
-                        Check it live
-                      </a>
+                  <div className="mt-2 flex items-center justify-between gap-4 flex-wrap">
+                    {project.demoPassword && (
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <span>Password: <code className="bg-muted px-2 py-1 rounded font-mono">{project.demoPassword}</code></span>
+                        <button
+                          onClick={() => copyToClipboard(project.demoPassword!)}
+                          className="p-1 rounded hover:bg-muted transition-colors"
+                          title="Copy password"
+                        >
+                          <Copy className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     )}
-                    {project.demoUrl && (
-                      <a
-                        href={project.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center px-3 py-1.5 text-xs font-medium tracking-wider bg-foreground text-white! dark:text-black! rounded-md transition-opacity hover:opacity-80 no-underline"
-                      >
-                        View demo
-                      </a>
-                    )}
-                    {project.demos && project.demos.map((demo, i) => {
-                      const isDocumentation = demo.label.toLowerCase().includes('documentation');
-                      return (
+                    <div className="flex items-center gap-2 ml-auto flex-wrap">
+                      {project.liveUrl && (
                         <a
-                          key={i}
-                          href={demo.url}
+                          href={project.liveUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`inline-flex items-center px-3 py-1.5 text-xs font-medium tracking-wider rounded-md transition-opacity hover:opacity-80 no-underline ${
-                            isDocumentation
-                              ? 'bg-amber-200 text-amber-900!'
-                              : 'bg-foreground text-white! dark:text-black!'
-                          }`}
+                          className="inline-flex items-center px-3 py-1.5 text-xs font-medium tracking-wider bg-sky-200 text-sky-900! rounded-md transition-opacity hover:opacity-80 no-underline"
                         >
-                          {demo.label}
+                          Check it live
                         </a>
-                      );
-                    })}
+                      )}
+                      {project.demoUrl && (
+                        <a
+                          href={project.demoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center px-3 py-1.5 text-xs font-medium tracking-wider bg-foreground text-white! dark:text-black! rounded-md transition-opacity hover:opacity-80 no-underline"
+                        >
+                          View demo
+                        </a>
+                      )}
+                      {project.demos && project.demos.map((demo, i) => {
+                        const isDocumentation = demo.label.toLowerCase().includes('documentation');
+                        return (
+                          <a
+                            key={i}
+                            href={demo.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center px-3 py-1.5 text-xs font-medium tracking-wider rounded-md transition-opacity hover:opacity-80 no-underline ${
+                              isDocumentation
+                                ? 'bg-amber-200 text-amber-900!'
+                                : 'bg-foreground text-white! dark:text-black!'
+                            }`}
+                          >
+                            {demo.label}
+                          </a>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
